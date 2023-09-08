@@ -3,4 +3,5 @@ module com.sasd.appcotizacion {
     requires javafx.fxml;
 
     exports com.sasd.appcotizacion.views;
+    exports com.sasd.appcotizacion.models;
 }

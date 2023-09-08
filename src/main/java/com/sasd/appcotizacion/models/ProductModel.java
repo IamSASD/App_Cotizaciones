@@ -7,13 +7,11 @@ import javafx.beans.property.StringProperty;
 public class ProductModel {
     private String productName;
     private String productVariant;
-    private int numberOfProducts;
     private double productPrice;
 
-    public ProductModel(String productName, String productVariant, int numberOfProducts, double price){
+    public ProductModel(String productName, String productVariant, double price){
         this.productName = productName;
         this.productVariant = productVariant;
-        this.numberOfProducts = numberOfProducts;
         this.productPrice = price;
     }
 
@@ -23,10 +21,6 @@ public class ProductModel {
 
     public String getProductVariant() {
         return productVariant;
-    }
-
-    public int getNumberOfProducts() {
-        return numberOfProducts;
     }
 
     public double getProductPrice() {

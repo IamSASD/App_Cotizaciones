@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -28,10 +29,22 @@ public class Products extends VBox {
         buttonContainer.setAlignment(Pos.CENTER_RIGHT);
         getChildren().add(buttonContainer);
 
-        fieldsBox = new VBox(nameBox,variantBox, numberOfProdBox, uniPriceBox);
+        fieldsBox = new VBox(nameBox,variantBox, uniPriceBox);
         fieldsBox.setSpacing(10);
 
+        TableColumn<ProductModel, String> nameProd = new TableColumn<>("Nombre");
+        TableColumn<ProductModel, String> variantProd = new TableColumn<>("Variante");
+        TableColumn<ProductModel, Double> priceProd = new TableColumn<>("Precio Unidad");
 
+        nameProd.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        variantProd.setCellValueFactory(new PropertyValueFactory<>("productVariant"));
+        priceProd.setCellValueFactory(new PropertyValueFactory<>("productPrice"));
+
+        productTable = new TableView<>();
+
+        productTable.getColumns().addAll(nameProd, variantProd, priceProd);
+
+        getChildren().add(productTable);
 
         createProduct.setOnMouseClicked(e -> {
             dialog = CommonsUIControls.createDialog("Crear Producto", "Nuevo Producto", fieldsBox);
@@ -40,6 +53,8 @@ public class Products extends VBox {
             dialog.showAndWait().ifPresent(resp -> {
                 if(resp.getButtonData().equals(ButtonBar.ButtonData.OK_DONE)){
                     getDialogData();
+                }else {
+                    cleanDialog();
                 }
             });
         });
@@ -49,32 +64,24 @@ public class Products extends VBox {
     private void getDialogData(){
         String nameValue = nameField.getText();
         String variantValue = variantField.getText();
-        int numberOfProdValue = Integer.parseInt(numberOfProdField.getText());
         double unitPriceValue = Double.parseDouble(unitPriceField.getText());
 
-        ProductModel newProduct = new ProductModel(nameValue, variantValue, numberOfProdValue, unitPriceValue);
+        ProductModel newProduct = new ProductModel(nameValue, variantValue, unitPriceValue);
 
-        System.out.println(nameValue + " " + variantValue + " " + numberOfProdValue + " " + unitPriceValue);
+        productTable.getItems().add(newProduct);
 
-    }
+        cleanDialog();
 
-    private void isNumber(Button butt){
-        TextField[] fields = {numberOfProdField, unitPriceField};
-        for (TextField f : fields){
-            f.setOnKeyTyped(e -> {
-
-            });
-        }
     }
 
     private void validateDialogFields(Button butt){
 
-        TextField[] fields = {nameField, variantField, numberOfProdField, unitPriceField};
+        TextField[] fields = {nameField, variantField, unitPriceField};
 
         for(TextField f : fields){
             f.setOnKeyTyped(e -> {
-                butt.setDisable(nameField.getText().isEmpty() || variantField.getText().isEmpty() || numberOfProdField.getText().isEmpty() || unitPriceField.getText().isEmpty());
-                if(f == numberOfProdField || f == unitPriceField){
+                butt.setDisable(nameField.getText().isEmpty() || variantField.getText().isEmpty() || unitPriceField.getText().isEmpty());
+                if(f == unitPriceField){
                     for (int i = 0; i < f.getText().length(); i++){
                         boolean isNum = Character.isDigit(f.getText().charAt(i));
                         if(!isNum) {
@@ -97,17 +104,21 @@ public class Products extends VBox {
 
     }
 
+    public void cleanDialog(){
+        nameField.clear();
+        variantField.clear();
+        unitPriceField.clear();
+    }
+
     private TableView<ProductModel> productTable;
     private final VBox fieldsBox;
     private Dialog<ButtonType> dialog;
     private final HBox  nameBox = CommonsUIControls.createInputField("Nombre");
     private final HBox variantBox = CommonsUIControls.createInputField("Variant");
-    private final HBox numberOfProdBox = CommonsUIControls.createInputField("Cantidad");
     private final HBox uniPriceBox = CommonsUIControls.createInputField("Precio unidad");
     private Button createProductButton;
     private final TextField nameField = ((TextField) nameBox.getChildren().get(1));
     private final TextField variantField = ((TextField) variantBox.getChildren().get(1));
-    private final TextField numberOfProdField = ((TextField) numberOfProdBox.getChildren().get(1));
     private final TextField unitPriceField = ((TextField) uniPriceBox.getChildren().get(1));
 
 }
