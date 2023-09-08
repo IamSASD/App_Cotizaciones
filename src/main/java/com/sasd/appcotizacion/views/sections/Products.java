@@ -1,5 +1,6 @@
 package com.sasd.appcotizacion.views.sections;
 
+import com.sasd.appcotizacion.controllers.ProductsController;
 import com.sasd.appcotizacion.models.ProductModel;
 import com.sasd.appcotizacion.views.CommonsUIControls;
 import com.sasd.appcotizacion.views.MainView;
@@ -16,10 +17,15 @@ import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.PopupWindow;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Products extends VBox {
     public Products(){
+
+        setPadding(new Insets(15));
+
         HBox title = CommonsUIControls.createTitle("Productos");
         getChildren().add(title);
 
@@ -32,20 +38,22 @@ public class Products extends VBox {
         fieldsBox = new VBox(nameBox,variantBox, uniPriceBox);
         fieldsBox.setSpacing(10);
 
+        TableColumn<ProductModel, Integer> idProd = new TableColumn<>("ID");
         TableColumn<ProductModel, String> nameProd = new TableColumn<>("Nombre");
         TableColumn<ProductModel, String> variantProd = new TableColumn<>("Variante");
         TableColumn<ProductModel, Double> priceProd = new TableColumn<>("Precio Unidad");
 
+        idProd.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameProd.setCellValueFactory(new PropertyValueFactory<>("productName"));
         variantProd.setCellValueFactory(new PropertyValueFactory<>("productVariant"));
         priceProd.setCellValueFactory(new PropertyValueFactory<>("productPrice"));
 
         productTable = new TableView<>();
 
-        productTable.getColumns().addAll(nameProd, variantProd, priceProd);
+        productTable.getColumns().addAll(idProd, nameProd, variantProd, priceProd);
 
         getChildren().add(productTable);
-
+        loadDataTable();
         createProduct.setOnMouseClicked(e -> {
             dialog = CommonsUIControls.createDialog("Crear Producto", "Nuevo Producto", fieldsBox);
             createProductButton = (Button) dialog.getDialogPane().lookupButton(dialog.getDialogPane().getButtonTypes().get(1));
@@ -68,10 +76,27 @@ public class Products extends VBox {
 
         ProductModel newProduct = new ProductModel(nameValue, variantValue, unitPriceValue);
 
-        productTable.getItems().add(newProduct);
-
+        ProductsController.setProducts(newProduct);
+        productTable.getItems().clear();
+        loadDataTable();
         cleanDialog();
 
+    }
+
+    private void loadDataTable(){
+        ResultSet rs = ProductsController.getAllProducts();
+        try {
+            while (rs.next()){
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String variant = rs.getString("variant");
+                double price = rs.getDouble("unit_price");
+                ProductModel product = new ProductModel(id, name, variant, price);
+                productTable.getItems().add(product);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void validateDialogFields(Button butt){
@@ -107,7 +132,7 @@ public class Products extends VBox {
     public void cleanDialog(){
         nameField.clear();
         variantField.clear();
-        unitPriceField.clear();
+        unitPriceField.setText("");
     }
 
     private TableView<ProductModel> productTable;

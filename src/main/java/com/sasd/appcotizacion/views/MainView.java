@@ -1,5 +1,6 @@
 package com.sasd.appcotizacion.views;
 
+import com.sasd.appcotizacion.controllers.DBConnection;
 import com.sasd.appcotizacion.views.sections.Clients;
 import com.sasd.appcotizacion.views.sections.CreateQuotation;
 import com.sasd.appcotizacion.views.sections.Products;
@@ -18,6 +19,9 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class MainView extends Application {
