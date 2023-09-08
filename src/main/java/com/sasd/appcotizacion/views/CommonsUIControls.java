@@ -25,14 +25,9 @@ public class CommonsUIControls {
 
         butt.setBackground(defautlBackg);
         butt.setTextFill(MainView.MAIN_COLOR);
-        butt.setOnMouseEntered(e -> {
-            butt.setBackground(new Background(new BackgroundFill(MainView.MAIN_COLOR, new CornerRadii(corners), Insets.EMPTY)));
-            butt.setTextFill(MainView.THIRD_COLOR);
-        });
-        butt.setOnMouseExited(e -> {
-            butt.setBackground(defautlBackg);
-            butt.setTextFill(MainView.MAIN_COLOR);
-        });
+
+        CommonsUIControls.setHover(butt);
+
         return butt;
     }
 
@@ -73,23 +68,8 @@ public class CommonsUIControls {
             b.setDisable(false);
         }
 
-        buttDone.setOnMouseEntered(e -> {
-            buttDone.setBackground(hoverBackg);
-            buttDone.setTextFill(MainView.THIRD_COLOR);
-        });
-        buttDone.setOnMouseExited(e -> {
-            buttDone.setBackground(defautlBackg);
-            buttDone.setTextFill(MainView.MAIN_COLOR);
-        });
-
-        buttCancel.setOnMouseEntered(e -> {
-            buttCancel.setBackground(hoverBackg);
-            buttCancel.setTextFill(MainView.THIRD_COLOR);
-        });
-        buttCancel.setOnMouseExited(e -> {
-            buttCancel.setBackground(defautlBackg);
-            buttCancel.setTextFill(MainView.MAIN_COLOR);
-        });
+        CommonsUIControls.setHover(buttDone);
+        CommonsUIControls.setHover(buttCancel);
 
         VBox dialogBox = new VBox();
         dialogBox.getChildren().add(node);
@@ -109,6 +89,17 @@ public class CommonsUIControls {
         hBox.setSpacing(11);
 
         return hBox;
+    }
+
+    private static void setHover(Button butt){
+        butt.setOnMouseEntered(e -> {
+            butt.setBackground(hoverBackg);
+            butt.setTextFill(MainView.THIRD_COLOR);
+        });
+        butt.setOnMouseExited(e -> {
+            butt.setBackground(defautlBackg);
+            butt.setTextFill(MainView.MAIN_COLOR);
+        });
     }
 
 }
