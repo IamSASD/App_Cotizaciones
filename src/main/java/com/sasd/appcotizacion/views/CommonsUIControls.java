@@ -43,11 +43,11 @@ public class CommonsUIControls {
         return titleContainer;
     }
 
-    public static Dialog<VBox> createDialog(String buttName, String title, VBox node) {
+    public static Dialog<ButtonType> createDialog(String buttName, String title, VBox node) {
         ButtonType done = new ButtonType(buttName, ButtonBar.ButtonData.OK_DONE);
         ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-        Dialog<VBox> dialog = new Dialog<>();
+        Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle(title);
 
         DialogPane pane = dialog.getDialogPane();
@@ -60,12 +60,13 @@ public class CommonsUIControls {
         Button buttCancel = (Button) pane.lookupButton(cancel);
         Button[] buttons = {buttDone, buttCancel};
 
+        buttDone.setDisable(true);
+
         for (Button b : buttons) {
             b.setCursor(Cursor.HAND);
             b.setBackground(new Background(new BackgroundFill(MainView.THIRD_COLOR, new CornerRadii(8), Insets.EMPTY)));
             b.setFont(MainView.SECONDARY_FONT);
             b.setTextFill(MainView.MAIN_COLOR);
-            b.setDisable(false);
         }
 
         CommonsUIControls.setHover(buttDone);
