@@ -43,7 +43,7 @@ public class CommonsUIControls {
         return titleContainer;
     }
 
-    public static Dialog<ButtonType> createDialog(String buttName, String title, VBox node) {
+    public static Dialog<ButtonType> createDialog(String buttName, String title, VBox node, boolean buttDiabled) {
         ButtonType done = new ButtonType(buttName, ButtonBar.ButtonData.OK_DONE);
         ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
@@ -60,7 +60,7 @@ public class CommonsUIControls {
         Button buttCancel = (Button) pane.lookupButton(cancel);
         Button[] buttons = {buttDone, buttCancel};
 
-        buttDone.setDisable(true);
+        buttDone.setDisable(buttDiabled);
 
         for (Button b : buttons) {
             b.setCursor(Cursor.HAND);

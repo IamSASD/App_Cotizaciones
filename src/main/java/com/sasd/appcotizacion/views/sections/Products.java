@@ -30,9 +30,13 @@ public class Products extends VBox {
         getChildren().add(title);
 
         Button createProduct = CommonsUIControls.createButton("Crear Producto", 200, MainView.SECONDARY_FONT);
-        HBox buttonContainer = new HBox(createProduct);
+        Button editButton = CommonsUIControls.createButton("Edita Producto", 180, MainView.SECONDARY_FONT);
+        Button deleteButton = CommonsUIControls.createButton("Eliminar Producto", 180, MainView.SECONDARY_FONT);
+
+        HBox buttonContainer = new HBox(deleteButton, editButton, createProduct);
         buttonContainer.setPadding(new Insets(10));
         buttonContainer.setAlignment(Pos.CENTER_RIGHT);
+        buttonContainer.setSpacing(8);
         getChildren().add(buttonContainer);
 
         fieldsBox = new VBox(nameBox,variantBox, uniPriceBox);
@@ -40,8 +44,13 @@ public class Products extends VBox {
 
         TableColumn<ProductModel, Integer> idProd = new TableColumn<>("ID");
         TableColumn<ProductModel, String> nameProd = new TableColumn<>("Nombre");
+        nameProd.setPrefWidth(150);
+
         TableColumn<ProductModel, String> variantProd = new TableColumn<>("Variante");
+        variantProd.setPrefWidth(150);
+
         TableColumn<ProductModel, Double> priceProd = new TableColumn<>("Precio Unidad");
+        priceProd.setPrefWidth(150);
 
         idProd.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameProd.setCellValueFactory(new PropertyValueFactory<>("productName"));
@@ -54,8 +63,9 @@ public class Products extends VBox {
 
         getChildren().add(productTable);
         loadDataTable();
+
         createProduct.setOnMouseClicked(e -> {
-            dialog = CommonsUIControls.createDialog("Crear Producto", "Nuevo Producto", fieldsBox);
+            dialog = CommonsUIControls.createDialog("Crear Producto", "Nuevo Producto", fieldsBox, true);
             createProductButton = (Button) dialog.getDialogPane().lookupButton(dialog.getDialogPane().getButtonTypes().get(1));
             validateDialogFields(createProductButton);
             dialog.showAndWait().ifPresent(resp -> {
@@ -67,6 +77,61 @@ public class Products extends VBox {
             });
         });
 
+        editButton.disableProperty().bind(
+                productTable.getSelectionModel().selectedItemProperty().isNull()
+        );
+        deleteButton.disableProperty().bind(
+                productTable.getSelectionModel().selectedItemProperty().isNull()
+        );
+
+        editButton.setOnMouseClicked(e -> {
+            ProductModel dataToEdit = productTable.getSelectionModel().selectedItemProperty().getValue();
+            int id = dataToEdit.getId();
+            nameField.setText(dataToEdit.getProductName());
+            variantField.setText(dataToEdit.getProductVariant());
+            unitPriceField.setText(String.valueOf(Math.round(dataToEdit.getProductPrice())));
+            Dialog<ButtonType> editDialog = CommonsUIControls.createDialog("Editar", "Editar Producto", fieldsBox, true);
+            Button editProdButton = (Button) editDialog.getDialogPane().lookupButton(editDialog.getDialogPane().getButtonTypes().get(1));
+            validateDialogFields(editProdButton);
+            editDialog.showAndWait().ifPresent(resp -> {
+                if(resp.getButtonData().equals(ButtonBar.ButtonData.OK_DONE)){
+                    updateProductTable(id);
+                }else {
+                    cleanDialog();
+                }
+            });
+        });
+
+        deleteButton.setOnMouseClicked(e -> {
+            int prodId = productTable.getSelectionModel().selectedItemProperty().getValue().getId();
+            Text deleteMsg = new Text("Estas seguro de querer eleminar este producto?");
+            VBox msgBox = new VBox(deleteMsg);
+            Dialog<ButtonType> deleteDialog = CommonsUIControls.createDialog("Si", "Eliminar Producto", msgBox, false);
+            deleteDialog.showAndWait().ifPresent(resp -> {
+                if(resp.getButtonData().equals(ButtonBar.ButtonData.OK_DONE)){
+                    deleteProductTable(prodId);
+                }
+            });
+        });
+
+    }
+
+    private void deleteProductTable(int id){
+        ProductsController.deleteProduct(id);
+        productTable.getItems().clear();
+        loadDataTable();
+    }
+
+    private void updateProductTable(int id){
+        String nameValue = nameField.getText();
+        String variantValue = variantField.getText();
+        double unitPriceValue = Double.parseDouble(unitPriceField.getText());
+
+        ProductModel editedProd = new ProductModel(id, nameValue, variantValue, unitPriceValue);
+        ProductsController.updateProduct(editedProd);
+        productTable.getItems().clear();
+        loadDataTable();
+        cleanDialog();
     }
 
     private void getDialogData(){

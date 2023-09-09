@@ -36,4 +36,29 @@ public class ProductsController {
         }
         return rs;
     }
+
+    public static void updateProduct(ProductModel product){
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement statement = conn.prepareStatement("UPDATE products SET name = ?, variant = ?, unit_price = ? WHERE id = ?");
+            statement.setString(1, product.getProductName());
+            statement.setString(2, product.getProductVariant());
+            statement.setDouble(3, product.getProductPrice());
+            statement.setInt(4, product.getId());
+            statement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void deleteProduct(int id){
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement statement = conn.prepareStatement("DELETE FROM products WHERE id = ?");
+            statement.setInt(1, id);
+            statement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
