@@ -90,6 +90,7 @@ public class Products extends VBox {
             nameField.setText(dataToEdit.getProductName());
             variantField.setText(dataToEdit.getProductVariant());
             unitPriceField.setText(String.valueOf(Math.round(dataToEdit.getProductPrice())));
+            nameField.requestFocus();
             Dialog<ButtonType> editDialog = CommonsUIControls.createDialog("Editar", "Editar Producto", fieldsBox, true);
             Button editProdButton = (Button) editDialog.getDialogPane().lookupButton(editDialog.getDialogPane().getButtonTypes().get(1));
             validateDialogFields(editProdButton);
@@ -118,6 +119,7 @@ public class Products extends VBox {
 
     private void deleteProductTable(int id){
         ProductsController.deleteProduct(id);
+        ProductsController.closeConnection();
         productTable.getItems().clear();
         loadDataTable();
     }
@@ -129,6 +131,7 @@ public class Products extends VBox {
 
         ProductModel editedProd = new ProductModel(id, nameValue, variantValue, unitPriceValue);
         ProductsController.updateProduct(editedProd);
+        ProductsController.closeConnection();
         productTable.getItems().clear();
         loadDataTable();
         cleanDialog();
@@ -142,6 +145,7 @@ public class Products extends VBox {
         ProductModel newProduct = new ProductModel(nameValue, variantValue, unitPriceValue);
 
         ProductsController.setProducts(newProduct);
+        ProductsController.closeConnection();
         productTable.getItems().clear();
         loadDataTable();
         cleanDialog();
@@ -159,6 +163,8 @@ public class Products extends VBox {
                 ProductModel product = new ProductModel(id, name, variant, price);
                 productTable.getItems().add(product);
             }
+            ProductsController.closeConnection();
+            rs.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
