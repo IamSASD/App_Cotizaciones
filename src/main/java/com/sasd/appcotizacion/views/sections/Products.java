@@ -4,6 +4,7 @@ import com.sasd.appcotizacion.controllers.ProductsController;
 import com.sasd.appcotizacion.models.ProductModel;
 import com.sasd.appcotizacion.views.CommonsUIControls;
 import com.sasd.appcotizacion.views.MainView;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -69,6 +70,7 @@ public class Products extends VBox {
             createProductButton = (Button) dialog.getDialogPane().lookupButton(dialog.getDialogPane().getButtonTypes().get(1));
             validateDialogFields(createProductButton);
             dialog.showAndWait().ifPresent(resp -> {
+                createProductButton.requestFocus();
                 if(resp.getButtonData().equals(ButtonBar.ButtonData.OK_DONE)){
                     getDialogData();
                 }else {
@@ -90,11 +92,11 @@ public class Products extends VBox {
             nameField.setText(dataToEdit.getProductName());
             variantField.setText(dataToEdit.getProductVariant());
             unitPriceField.setText(String.valueOf(Math.round(dataToEdit.getProductPrice())));
-            nameField.requestFocus();
-            Dialog<ButtonType> editDialog = CommonsUIControls.createDialog("Editar", "Editar Producto", fieldsBox, true);
-            Button editProdButton = (Button) editDialog.getDialogPane().lookupButton(editDialog.getDialogPane().getButtonTypes().get(1));
+            dialog = CommonsUIControls.createDialog("Editar", "Editar Producto", fieldsBox, true);
+            Button editProdButton = (Button) dialog.getDialogPane().lookupButton(dialog.getDialogPane().getButtonTypes().get(1));
             validateDialogFields(editProdButton);
-            editDialog.showAndWait().ifPresent(resp -> {
+            dialog.showAndWait().ifPresent(resp -> {
+                editProdButton.requestFocus();
                 if(resp.getButtonData().equals(ButtonBar.ButtonData.OK_DONE)){
                     updateProductTable(id);
                 }else {
@@ -203,7 +205,7 @@ public class Products extends VBox {
     public void cleanDialog(){
         nameField.clear();
         variantField.clear();
-        unitPriceField.setText("");
+        unitPriceField.clear();
     }
 
     private TableView<ProductModel> productTable;
