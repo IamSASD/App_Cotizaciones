@@ -11,6 +11,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -65,12 +66,20 @@ public class Products extends VBox {
         getChildren().add(productTable);
         loadDataTable();
 
+        TextField[] fields = {nameField, variantField, unitPriceField};
+        for(TextField f: fields){
+            f.setOnKeyPressed(ev -> {
+                if(ev.getCode() == KeyCode.ENTER){
+                    nameBox.requestFocus();
+                }
+            });
+        }
+
         createProduct.setOnMouseClicked(e -> {
             dialog = CommonsUIControls.createDialog("Crear Producto", "Nuevo Producto", fieldsBox, true);
             createProductButton = (Button) dialog.getDialogPane().lookupButton(dialog.getDialogPane().getButtonTypes().get(1));
             validateDialogFields(createProductButton);
             dialog.showAndWait().ifPresent(resp -> {
-                createProductButton.requestFocus();
                 if(resp.getButtonData().equals(ButtonBar.ButtonData.OK_DONE)){
                     getDialogData();
                 }else {
@@ -95,8 +104,8 @@ public class Products extends VBox {
             dialog = CommonsUIControls.createDialog("Editar", "Editar Producto", fieldsBox, true);
             Button editProdButton = (Button) dialog.getDialogPane().lookupButton(dialog.getDialogPane().getButtonTypes().get(1));
             validateDialogFields(editProdButton);
+
             dialog.showAndWait().ifPresent(resp -> {
-                editProdButton.requestFocus();
                 if(resp.getButtonData().equals(ButtonBar.ButtonData.OK_DONE)){
                     updateProductTable(id);
                 }else {
@@ -188,7 +197,6 @@ public class Products extends VBox {
                             }
                             Text errorMsg = new Text("Este campo no puede contener letras");
                             fieldsBox.getChildren().add(0, errorMsg);
-                            System.out.println();
                             butt.setDisable(true);
                             break;
                         };
@@ -212,7 +220,7 @@ public class Products extends VBox {
     private final VBox fieldsBox;
     private Dialog<ButtonType> dialog;
     private final HBox  nameBox = CommonsUIControls.createInputField("Nombre");
-    private final HBox variantBox = CommonsUIControls.createInputField("Variant");
+    private final HBox variantBox = CommonsUIControls.createInputField("Variante");
     private final HBox uniPriceBox = CommonsUIControls.createInputField("Precio unidad");
     private Button createProductButton;
     private final TextField nameField = ((TextField) nameBox.getChildren().get(1));
