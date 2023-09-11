@@ -36,6 +36,21 @@ public class ProductsController {
         return rs;
     }
 
+    public static ResultSet getProductNameAndVariant(String name){
+        ResultSet rs;
+        try{
+            conn = DBConnection.getConnection();
+
+            PreparedStatement statement = conn.prepareStatement("SELECT id, name, variant FROM products WHERE name = ? COLLATE NOCASE");
+            statement.setString(1, name);
+            rs = statement.executeQuery();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return rs;
+    }
+
     public static void updateProduct(ProductModel product){
         try {
             conn = DBConnection.getConnection();

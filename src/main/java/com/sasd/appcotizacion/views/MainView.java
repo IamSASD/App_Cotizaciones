@@ -1,28 +1,17 @@
 package com.sasd.appcotizacion.views;
 
-import com.sasd.appcotizacion.controllers.DBConnection;
 import com.sasd.appcotizacion.views.sections.Clients;
-import com.sasd.appcotizacion.views.sections.CreateQuotation;
+import com.sasd.appcotizacion.views.sections.CreateQuote;
 import com.sasd.appcotizacion.views.sections.Products;
-import com.sasd.appcotizacion.views.sections.Quotations;
+import com.sasd.appcotizacion.views.sections.Quotes;
 import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class MainView extends Application {
     public static final Font MAIN_FONT = Font.font("Helvetica", FontWeight.BOLD, 20);
@@ -30,19 +19,22 @@ public class MainView extends Application {
     public static final Paint MAIN_COLOR = Color.rgb(255, 155, 80);
     public static final Paint SECONDARY_COLOR = Color.rgb(252, 252, 252);
     public static final Paint THIRD_COLOR = Color.rgb(240, 240, 240);
-    public static final CreateQuotation CREATE_QUOTATION_SECTION = new CreateQuotation();
-    public static final Products PRODUCTS_SECTION = new Products();
-    public static final Clients CLIENTS_SECTION = new Clients();
-    public static final Quotations QUOTATIONS_SECTION = new Quotations();
+    public static CreateQuote CREATE_QUOTATION_SECTION;
+    public static Products PRODUCTS_SECTION;
+    public static Clients CLIENTS_SECTION;
+    public static Quotes QUOTATIONS_SECTION;
     @Override
     public void start(Stage stage) throws Exception {
+        CREATE_QUOTATION_SECTION = new CreateQuote();
+        PRODUCTS_SECTION = new Products();
+        CLIENTS_SECTION = new Clients();
+        QUOTATIONS_SECTION = new Quotes();
 
         SectionContainerBox sectionContainer = new SectionContainerBox(CREATE_QUOTATION_SECTION);
 
         HBox mainBox = new HBox(new MenuBox(sectionContainer), sectionContainer);
 
         Scene scene = new Scene(mainBox, 1000, 800);
-
         stage.setTitle("Cotizaciones");
         stage.setMaximized(true);
         stage.setScene(scene);

@@ -1,3 +1,7 @@
 Manifest-Version: 1.0
-Main-Class: com.sasd.appcotizacion.views.MainView
+Main-Class: com.sasd.appcotizacion.views.Launcher
+Class-Path: javafx-controls-17.0.6.jar javafx-graphics-17.0.6.jar sqlite
+ -jdbc-3.43.0.0.jar javafx-base-17.0.6.jar javafx-graphics-17.0.6-linux.
+ jar javafx-base-17.0.6-linux.jar javafx-fxml-17.0.6.jar javafx-controls
+ -17.0.6-linux.jar javafx-fxml-17.0.6-linux.jar
 

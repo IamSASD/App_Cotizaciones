@@ -1,19 +1,10 @@
 package com.sasd.appcotizacion.views;
 
-import com.sasd.appcotizacion.views.sections.Clients;
-import com.sasd.appcotizacion.views.sections.CreateQuotation;
-import com.sasd.appcotizacion.views.sections.Products;
-import com.sasd.appcotizacion.views.sections.Quotations;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 
 public class MenuBox extends VBox {
     private final double BUTTON_WITH = 200;
