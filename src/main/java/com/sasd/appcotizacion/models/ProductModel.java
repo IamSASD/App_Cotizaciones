@@ -9,6 +9,8 @@ public class ProductModel {
     private String productName;
     private String productVariant;
     private double productPrice;
+    private int numberOfProd;
+    private double total;
 
     public ProductModel(String productName, String productVariant, double price){
         this.productName = productName;
@@ -21,6 +23,15 @@ public class ProductModel {
         this.productName = productName;
         this.productVariant = productVariant;
         this.productPrice = price;
+    }
+
+    public ProductModel(int id, String productName, String productVariant, double price, int numberOfProd,  double total){
+        this.id = id;
+        this.productName = productName;
+        this.productVariant = productVariant;
+        this.productPrice = price;
+        this.numberOfProd = numberOfProd;
+        this.total = total;
     }
 
     public int getId(){
@@ -37,5 +48,13 @@ public class ProductModel {
 
     public double getProductPrice() {
         return productPrice;
+    }
+
+    public int getNumberOfProd(){
+        return numberOfProd;
+    }
+
+    public double getTotal(){
+        return total;
     }
 }

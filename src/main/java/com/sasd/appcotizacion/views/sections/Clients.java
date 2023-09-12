@@ -24,6 +24,7 @@ import java.sql.SQLException;
 public class Clients extends VBox {
 
     public Clients(){
+        setPadding(new Insets(15));
         HBox title = CommonsUIControls.createTitle("Clientes");
         getChildren().add(title);
 

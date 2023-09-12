@@ -136,8 +136,8 @@ public class Products extends VBox {
     }
 
     private void updateProductTable(int id){
-        String nameValue = nameField.getText();
-        String variantValue = variantField.getText();
+        String nameValue = nameField.getText().strip();
+        String variantValue = variantField.getText().strip();
         double unitPriceValue = Double.parseDouble(unitPriceField.getText());
 
         ProductModel editedProd = new ProductModel(id, nameValue, variantValue, unitPriceValue);

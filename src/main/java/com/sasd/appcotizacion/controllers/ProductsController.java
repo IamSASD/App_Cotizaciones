@@ -36,12 +36,12 @@ public class ProductsController {
         return rs;
     }
 
-    public static ResultSet getProductNameAndVariant(String name){
+    public static ResultSet getProductsByName(String name){
         ResultSet rs;
         try{
             conn = DBConnection.getConnection();
 
-            PreparedStatement statement = conn.prepareStatement("SELECT id, name, variant FROM products WHERE name = ? COLLATE NOCASE");
+            PreparedStatement statement = conn.prepareStatement("SELECT id, name, variant, unit_price FROM products WHERE name = ? COLLATE NOCASE");
             statement.setString(1, name);
             rs = statement.executeQuery();
 

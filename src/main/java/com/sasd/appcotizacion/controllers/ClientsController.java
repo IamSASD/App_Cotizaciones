@@ -3,10 +3,7 @@ package com.sasd.appcotizacion.controllers;
 import com.sasd.appcotizacion.models.ClientModel;
 import com.sasd.appcotizacion.models.ProductModel;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class ClientsController {
     private static Connection conn;
@@ -27,12 +24,27 @@ public class ClientsController {
     }
 
     public static ResultSet getAllClients(){
-        ResultSet rs = null;
+        ResultSet rs;
         try {
             conn = DBConnection.getConnection();
-            rs = conn.createStatement().executeQuery("SELECT * FROM clients");
+            Statement statement = conn.createStatement();
+            rs = statement.executeQuery("SELECT * FROM clients");
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return rs;
+    }
+
+    public static ResultSet selectClientByName(String name){
+        ResultSet rs;
+        try {
+            conn = DBConnection.getConnection();
+
+            PreparedStatement statement = conn.prepareStatement("SELECT id, name FROM clients WHERE name LIKE ? COLLATE NOCASE");
+            statement.setString(1, "%" + name + "%");
+            rs = statement.executeQuery();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return rs;
     }
@@ -48,7 +60,7 @@ public class ClientsController {
             statement.close();
             conn.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -61,15 +73,15 @@ public class ClientsController {
             statement.close();
             conn.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
-    public void closeConnection(){
+    public static void closeConnection(){
         try {
             conn.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
