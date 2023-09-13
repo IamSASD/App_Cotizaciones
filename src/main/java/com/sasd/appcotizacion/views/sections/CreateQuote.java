@@ -17,9 +17,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -150,6 +153,11 @@ public class CreateQuote extends VBox {
         );
         removeProduct.setOnMouseClicked(e -> {
             productsTable.getItems().remove(productsTable.getSelectionModel().getSelectedIndex());
+            calculateTotal();
+            Text totalText = new Text(fmt.format(totalAmount));
+            totalText.setFont(Font.font("Helvetica", 16));
+            totalAmountBox.getChildren().remove(1);
+            totalAmountBox.getChildren().add(totalText);
         });
 
         Button buttonCreateQuote = CommonsUIControls.createButton("Crear Cotizacion", 200, MainView.MAIN_FONT);
@@ -190,7 +198,7 @@ public class CreateQuote extends VBox {
                 String id = rs.getString("id");
                 String name = rs.getString("name");
                 String variant = rs.getString("variant");
-                double unitPrice = rs.getDouble("unit_price");
+                BigDecimal unitPrice = rs.getBigDecimal("unit_price");
                 CheckBox check = new CheckBox(id);
                 Text nameText = new Text(name);
                 Text variantText = new Text(variant);
@@ -201,9 +209,13 @@ public class CreateQuote extends VBox {
                 Button add = new Button("Agregar");
                 add.setDisable(true);
                 add.setOnMouseClicked(e -> {
-                    int amountNum = Integer.parseInt(amount.getText());
-                    ProductModel product = new ProductModel(Integer.parseInt(id),name, variant, unitPrice, amountNum, unitPrice * amountNum);
+                    BigDecimal amountNum = new BigDecimal(amount.getText());
+                    ProductModel product = new ProductModel(Integer.parseInt(id),name, variant, unitPrice, amountNum.intValue(), fmt.format(unitPrice.multiply(amountNum)));
                     addProductButton(product);
+                    check.setSelected(false);
+                    check.setDisable(true);
+                    amount.setDisable(true);
+                    add.setDisable(true);
                 });
                 check.setOnAction(ev -> {
                     amount.setDisable(!check.isSelected());
@@ -287,10 +299,8 @@ public class CreateQuote extends VBox {
 
     private void addProductButton(ProductModel product){
         productsTable.getItems().add(product);
-        totalAmount += product.getTotal();
-        Locale esCO = new Locale("es", "CO");
-        NumberFormat fmt = NumberFormat.getCurrencyInstance(esCO);
-        Text totalText = new Text(String.valueOf(fmt.format(totalAmount)));
+        calculateTotal();
+        Text totalText = new Text(fmt.format(totalAmount));
         totalText.setFont(Font.font("Helvetica", 16));
         if(totalAmountBox.getChildren().toArray().length == 2){
             totalAmountBox.getChildren().remove(1);
@@ -300,14 +310,29 @@ public class CreateQuote extends VBox {
         }
     }
 
+    private void calculateTotal(){
+        List<ProductModel> products = productsTable.getItems();
+        for(ProductModel p : products){
+            String total = p.getTotal();
+            String cleanTotal = total
+                    .replace("$", "")
+                    .replace(".", "")
+                    .replace(",", ".")
+                    .replaceAll("[^\\d.-]", "");
+            System.out.println(cleanTotal);
+            BigDecimal parseTotal = new BigDecimal(cleanTotal);
+            totalAmount = totalAmount.add(parseTotal);
+        }
+    }
+
     private final VBox boxContent;
     private final TextField searchField;
     private final TableView<ProductModel> productsTable;
     private final HBox totalAmountBox;
-    private double totalAmount;
+    private BigDecimal totalAmount = new BigDecimal(0);
     private VBox searchBox;
     private final HBox selectedClient;
     private Dialog<ButtonType> dialogClient;
     private String clientID;
-
+    private final NumberFormat fmt = NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
 }

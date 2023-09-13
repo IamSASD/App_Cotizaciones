@@ -19,6 +19,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.PopupWindow;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -100,7 +101,7 @@ public class Products extends VBox {
             int id = dataToEdit.getId();
             nameField.setText(dataToEdit.getProductName());
             variantField.setText(dataToEdit.getProductVariant());
-            unitPriceField.setText(String.valueOf(Math.round(dataToEdit.getProductPrice())));
+            unitPriceField.setText(String.valueOf(dataToEdit.getProductPrice()));
             dialog = CommonsUIControls.createDialog("Editar", "Editar Producto", fieldsBox, true);
             Button editProdButton = (Button) dialog.getDialogPane().lookupButton(dialog.getDialogPane().getButtonTypes().get(1));
             validateDialogFields(editProdButton);
@@ -138,7 +139,7 @@ public class Products extends VBox {
     private void updateProductTable(int id){
         String nameValue = nameField.getText().strip();
         String variantValue = variantField.getText().strip();
-        double unitPriceValue = Double.parseDouble(unitPriceField.getText());
+        BigDecimal unitPriceValue = new BigDecimal(unitPriceField.getText());
 
         ProductModel editedProd = new ProductModel(id, nameValue, variantValue, unitPriceValue);
         ProductsController.updateProduct(editedProd);
@@ -151,7 +152,7 @@ public class Products extends VBox {
     private void getDialogData(){
         String nameValue = nameField.getText();
         String variantValue = variantField.getText();
-        double unitPriceValue = Double.parseDouble(unitPriceField.getText());
+        BigDecimal unitPriceValue = new BigDecimal(unitPriceField.getText());
 
         ProductModel newProduct = new ProductModel(nameValue, variantValue, unitPriceValue);
 
@@ -170,7 +171,7 @@ public class Products extends VBox {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 String variant = rs.getString("variant");
-                double price = rs.getDouble("unit_price");
+                BigDecimal price = rs.getBigDecimal("unit_price");
                 ProductModel product = new ProductModel(id, name, variant, price);
                 productTable.getItems().add(product);
             }

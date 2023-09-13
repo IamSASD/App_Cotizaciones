@@ -16,7 +16,7 @@ public class ProductsController {
             PreparedStatement statement = conn.prepareStatement("INSERT INTO products(name, variant, unit_price) VALUES(?, ?, ?)");
             statement.setString(1, product.getProductName());
             statement.setString(2, product.getProductVariant());
-            statement.setDouble(3, product.getProductPrice());
+            statement.setBigDecimal(3, product.getProductPrice());
             statement.execute();
 
             statement.close();
@@ -57,7 +57,7 @@ public class ProductsController {
             PreparedStatement statement = conn.prepareStatement("UPDATE products SET name = ?, variant = ?, unit_price = ? WHERE id = ?");
             statement.setString(1, product.getProductName());
             statement.setString(2, product.getProductVariant());
-            statement.setDouble(3, product.getProductPrice());
+            statement.setBigDecimal(3, product.getProductPrice());
             statement.setInt(4, product.getId());
             statement.execute();
             statement.close();
