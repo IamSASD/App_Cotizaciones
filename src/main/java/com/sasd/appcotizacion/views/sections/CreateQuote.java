@@ -3,7 +3,9 @@ package com.sasd.appcotizacion.views.sections;
 import com.sasd.appcotizacion.controllers.ClientsController;
 import com.sasd.appcotizacion.controllers.DBConnection;
 import com.sasd.appcotizacion.controllers.ProductsController;
+import com.sasd.appcotizacion.controllers.QuotesController;
 import com.sasd.appcotizacion.models.ProductModel;
+import com.sasd.appcotizacion.models.QuoteModel;
 import com.sasd.appcotizacion.views.CommonsUIControls;
 import com.sasd.appcotizacion.views.MainView;
 import javafx.geometry.Insets;
@@ -61,7 +63,7 @@ public class CreateQuote extends VBox {
         TableColumn<ProductModel, String> variantProd = new TableColumn<>("Variante");
         variantProd.setPrefWidth(150);
 
-        TableColumn<ProductModel, Double> priceProd = new TableColumn<>("Precio Unidad");
+        TableColumn<ProductModel, String> priceProd = new TableColumn<>("Precio Unidad");
         priceProd.setPrefWidth(150);
 
         TableColumn<ProductModel, Integer> numberOfProd = new TableColumn<>("Cantidad");
@@ -73,7 +75,7 @@ public class CreateQuote extends VBox {
         idProd.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameProd.setCellValueFactory(new PropertyValueFactory<>("productName"));
         variantProd.setCellValueFactory(new PropertyValueFactory<>("productVariant"));
-        priceProd.setCellValueFactory(new PropertyValueFactory<>("productPrice"));
+        priceProd.setCellValueFactory(new PropertyValueFactory<>("formattedPrice"));
         numberOfProd.setCellValueFactory(new PropertyValueFactory<>("numberOfProd"));
         total.setCellValueFactory(new PropertyValueFactory<>("total"));
 
@@ -177,9 +179,16 @@ public class CreateQuote extends VBox {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "No has seleccionado el cliente", ButtonType.OK);
                 alert.showAndWait();
             } else {
+                StringBuilder productsString = new StringBuilder();
                 for(ProductModel p : products){
-                    System.out.println(p.getTotal());
+                    productsString.append(p).append(";");
                 }
+                String totalAmount = ((Text)totalAmountBox.getChildren().get(1)).getText();
+                QuoteModel quote = new QuoteModel(productsString.toString(), totalAmount, Integer.parseInt(clientID));
+                QuotesController.createQuote(quote);
+                productsTable.getItems().clear();
+                totalAmountBox.getChildren().remove(1);
+                selectedClient.getChildren().remove(1);
             }
         });
 
@@ -210,7 +219,7 @@ public class CreateQuote extends VBox {
                 add.setDisable(true);
                 add.setOnMouseClicked(e -> {
                     BigDecimal amountNum = new BigDecimal(amount.getText());
-                    ProductModel product = new ProductModel(Integer.parseInt(id),name, variant, unitPrice, amountNum.intValue(), fmt.format(unitPrice.multiply(amountNum)));
+                    ProductModel product = new ProductModel(Integer.parseInt(id),name, variant, fmt.format(unitPrice), amountNum.intValue(), fmt.format(unitPrice.multiply(amountNum)));
                     addProductButton(product);
                     check.setSelected(false);
                     check.setDisable(true);
@@ -311,25 +320,29 @@ public class CreateQuote extends VBox {
     }
 
     private void calculateTotal(){
+        totalAmount = new BigDecimal(0);
         List<ProductModel> products = productsTable.getItems();
         for(ProductModel p : products){
             String total = p.getTotal();
-            String cleanTotal = total
-                    .replace("$", "")
-                    .replace(".", "")
-                    .replace(",", ".")
-                    .replaceAll("[^\\d.-]", "");
-            System.out.println(cleanTotal);
-            BigDecimal parseTotal = new BigDecimal(cleanTotal);
+            BigDecimal parseTotal = toBigDecimal(total);
             totalAmount = totalAmount.add(parseTotal);
         }
+    }
+
+    private BigDecimal toBigDecimal(String val){
+        String cleanVal = val
+                .replace("$", "")
+                .replace(".", "")
+                .replace(",", ".")
+                .replaceAll("[^\\d.-]", "");
+        return new BigDecimal(cleanVal);
     }
 
     private final VBox boxContent;
     private final TextField searchField;
     private final TableView<ProductModel> productsTable;
     private final HBox totalAmountBox;
-    private BigDecimal totalAmount = new BigDecimal(0);
+    private BigDecimal totalAmount;
     private VBox searchBox;
     private final HBox selectedClient;
     private Dialog<ButtonType> dialogClient;

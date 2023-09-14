@@ -13,13 +13,13 @@ public class ClientsController {
             conn = DBConnection.getConnection();
 
             PreparedStatement statement = conn.prepareStatement("INSERT INTO clients(name, phone) VALUES(?, ?)");
-            statement.setString(1, client.getName());
-            statement.setString(2, client.getPhone());
+            statement.setString(1, client.getName().strip());
+            statement.setString(2, client.getPhone().strip());
             statement.execute();
             statement.close();
             conn.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -53,8 +53,8 @@ public class ClientsController {
         try {
             conn = DBConnection.getConnection();
             PreparedStatement statement = conn.prepareStatement("UPDATE clients SET name = ?, phone = ? WHERE id = ?");
-            statement.setString(1, client.getName());
-            statement.setString(2, client.getPhone());
+            statement.setString(1, client.getName().strip());
+            statement.setString(2, client.getPhone().strip());
             statement.setInt(3, client.getId());
             statement.execute();
             statement.close();

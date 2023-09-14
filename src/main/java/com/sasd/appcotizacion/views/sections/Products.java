@@ -22,7 +22,9 @@ import javafx.stage.PopupWindow;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class Products extends VBox {
     public Products(){
@@ -52,13 +54,13 @@ public class Products extends VBox {
         TableColumn<ProductModel, String> variantProd = new TableColumn<>("Variante");
         variantProd.setPrefWidth(150);
 
-        TableColumn<ProductModel, Double> priceProd = new TableColumn<>("Precio Unidad");
+        TableColumn<ProductModel, String> priceProd = new TableColumn<>("Precio Unidad");
         priceProd.setPrefWidth(150);
 
         idProd.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameProd.setCellValueFactory(new PropertyValueFactory<>("productName"));
         variantProd.setCellValueFactory(new PropertyValueFactory<>("productVariant"));
-        priceProd.setCellValueFactory(new PropertyValueFactory<>("productPrice"));
+        priceProd.setCellValueFactory(new PropertyValueFactory<>("formattedPrice"));
 
         productTable = new TableView<>();
 
@@ -172,7 +174,8 @@ public class Products extends VBox {
                 String name = rs.getString("name");
                 String variant = rs.getString("variant");
                 BigDecimal price = rs.getBigDecimal("unit_price");
-                ProductModel product = new ProductModel(id, name, variant, price);
+                NumberFormat fmt = NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
+                ProductModel product = new ProductModel(id, name, variant, fmt.format(price));
                 productTable.getItems().add(product);
             }
             ProductsController.closeConnection();

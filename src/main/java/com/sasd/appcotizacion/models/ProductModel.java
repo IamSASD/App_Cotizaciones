@@ -13,6 +13,7 @@ public class ProductModel {
     private BigDecimal productPrice;
     private int numberOfProd;
     private String total;
+    private String formattedPrice;
 
     public ProductModel(String productName, String productVariant, BigDecimal price){
         this.productName = productName;
@@ -27,11 +28,18 @@ public class ProductModel {
         this.productPrice = price;
     }
 
-    public ProductModel(int id, String productName, String productVariant, BigDecimal price, int numberOfProd,  String total){
+    public ProductModel(int id, String productName, String productVariant, String formattedPrice){
         this.id = id;
         this.productName = productName;
         this.productVariant = productVariant;
-        this.productPrice = price;
+        this.formattedPrice = formattedPrice;
+    }
+
+    public ProductModel(int id, String productName, String productVariant, String formattedPrice, int numberOfProd,  String total){
+        this.id = id;
+        this.productName = productName;
+        this.productVariant = productVariant;
+        this.formattedPrice = formattedPrice;
         this.numberOfProd = numberOfProd;
         this.total = total;
     }
@@ -56,7 +64,21 @@ public class ProductModel {
         return numberOfProd;
     }
 
+    public String getFormattedPrice(){
+        return formattedPrice;
+    }
+
     public String getTotal(){
         return total;
+    }
+
+    @Override
+    public String toString() {
+        return  id + " " +
+                productName + " " +
+                productVariant + " " +
+                productPrice + " " +
+                numberOfProd + " " +
+                total;
     }
 }

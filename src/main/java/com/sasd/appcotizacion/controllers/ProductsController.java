@@ -14,8 +14,8 @@ public class ProductsController {
             conn = DBConnection.getConnection();
 
             PreparedStatement statement = conn.prepareStatement("INSERT INTO products(name, variant, unit_price) VALUES(?, ?, ?)");
-            statement.setString(1, product.getProductName());
-            statement.setString(2, product.getProductVariant());
+            statement.setString(1, product.getProductName().strip());
+            statement.setString(2, product.getProductVariant().strip());
             statement.setBigDecimal(3, product.getProductPrice());
             statement.execute();
 
@@ -41,8 +41,8 @@ public class ProductsController {
         try{
             conn = DBConnection.getConnection();
 
-            PreparedStatement statement = conn.prepareStatement("SELECT id, name, variant, unit_price FROM products WHERE name = ? COLLATE NOCASE");
-            statement.setString(1, name);
+            PreparedStatement statement = conn.prepareStatement("SELECT id, name, variant, unit_price FROM products WHERE name LIKE ? COLLATE NOCASE");
+            statement.setString(1, "%" + name.strip() + "%");
             rs = statement.executeQuery();
 
         } catch (SQLException e) {
@@ -55,8 +55,8 @@ public class ProductsController {
         try {
             conn = DBConnection.getConnection();
             PreparedStatement statement = conn.prepareStatement("UPDATE products SET name = ?, variant = ?, unit_price = ? WHERE id = ?");
-            statement.setString(1, product.getProductName());
-            statement.setString(2, product.getProductVariant());
+            statement.setString(1, product.getProductName().strip());
+            statement.setString(2, product.getProductVariant().strip());
             statement.setBigDecimal(3, product.getProductPrice());
             statement.setInt(4, product.getId());
             statement.execute();
