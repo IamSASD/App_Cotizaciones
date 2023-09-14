@@ -77,7 +77,7 @@ public class ProductModel {
         return  id + " " +
                 productName + " " +
                 productVariant + " " +
-                productPrice + " " +
+                formattedPrice + " " +
                 numberOfProd + " " +
                 total;
     }

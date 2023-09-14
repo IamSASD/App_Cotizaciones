@@ -10,7 +10,7 @@ public class QuotesController {
         try{
             conn = DBConnection.getConnection();
 
-            PreparedStatement statement = conn.prepareStatement("INSERT INTO quotes(products, total, clientId) VALUES(?,?,?)");
+            PreparedStatement statement = conn.prepareStatement("INSERT INTO quotes(products, total, date,clientId) VALUES(?,?, datetime('now', 'localtime'),?)");
             statement.setString(1, quote.getProducts());
             statement.setString(2, quote.getTotal());
             statement.setInt(3, quote.getClientID());
@@ -27,7 +27,7 @@ public class QuotesController {
         try{
             conn = DBConnection.getConnection();
 
-            rs = conn.createStatement().executeQuery("SELECT * FROM quotes");
+            rs = conn.createStatement().executeQuery("SELECT q.id, q.products, q.total, q.date, c.name client_name, c.id client_id FROM quotes q INNER JOIN clients c ON c.id = q.clientId");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -21,16 +21,16 @@ public class MenuBox extends VBox {
         setSpacing(15);
 
         Button createQuotation = CommonsUIControls.createButton("Crear Cotizacion", BUTTON_WITH, MainView.MAIN_FONT);
-        createQuotation.setOnMouseClicked(e -> section.getChildren().setAll(MainView.CREATE_QUOTATION_SECTION));
+        createQuotation.setOnMouseClicked(e -> section.getChildren().setAll(MainView.create_quotation_section));
 
         Button products = CommonsUIControls.createButton("Productos", BUTTON_WITH, MainView.MAIN_FONT);
-        products.setOnMouseClicked(e -> section.getChildren().setAll(MainView.PRODUCTS_SECTION));
+        products.setOnMouseClicked(e -> section.getChildren().setAll(MainView.products_section));
 
         Button clients = CommonsUIControls.createButton("Clientes", BUTTON_WITH, MainView.MAIN_FONT);
-        clients.setOnMouseClicked(e -> section.getChildren().setAll(MainView.CLIENTS_SECTION));
+        clients.setOnMouseClicked(e -> section.getChildren().setAll(MainView.clients_section));
 
         Button quotations = CommonsUIControls.createButton("Cotizaciones", BUTTON_WITH, MainView.MAIN_FONT);
-        quotations.setOnMouseClicked(e -> section.getChildren().setAll(MainView.QUOTATIONS_SECTION));
+        quotations.setOnMouseClicked(e -> section.getChildren().setAll(MainView.quotes_section));
 
         getChildren().addAll(createQuotation, products, clients, quotations);
 

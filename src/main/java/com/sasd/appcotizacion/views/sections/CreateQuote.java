@@ -189,6 +189,7 @@ public class CreateQuote extends VBox {
                 productsTable.getItems().clear();
                 totalAmountBox.getChildren().remove(1);
                 selectedClient.getChildren().remove(1);
+                Quotes.loadQuotes();
             }
         });
 

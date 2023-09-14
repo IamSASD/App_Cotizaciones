@@ -19,18 +19,18 @@ public class MainView extends Application {
     public static final Paint MAIN_COLOR = Color.rgb(255, 155, 80);
     public static final Paint SECONDARY_COLOR = Color.rgb(252, 252, 252);
     public static final Paint THIRD_COLOR = Color.rgb(240, 240, 240);
-    public static CreateQuote CREATE_QUOTATION_SECTION;
-    public static Products PRODUCTS_SECTION;
-    public static Clients CLIENTS_SECTION;
-    public static Quotes QUOTATIONS_SECTION;
+    public static CreateQuote create_quotation_section;
+    public static Products products_section;
+    public static Clients clients_section;
+    public static Quotes quotes_section;
     @Override
     public void start(Stage stage) throws Exception {
-        CREATE_QUOTATION_SECTION = new CreateQuote();
-        PRODUCTS_SECTION = new Products();
-        CLIENTS_SECTION = new Clients();
-        QUOTATIONS_SECTION = new Quotes();
+        create_quotation_section = new CreateQuote();
+        products_section = new Products();
+        clients_section = new Clients();
+        quotes_section = new Quotes();
 
-        SectionContainerBox sectionContainer = new SectionContainerBox(CREATE_QUOTATION_SECTION);
+        SectionContainerBox sectionContainer = new SectionContainerBox(create_quotation_section);
 
         HBox mainBox = new HBox(new MenuBox(sectionContainer), sectionContainer);
 

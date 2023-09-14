@@ -13,7 +13,7 @@ public class DBConnection {
 
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS products(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, variant TEXT, unit_price REAL)");
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS clients(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, phone TEXT)");
-        statement.executeUpdate("CREATE TABLE IF NOT EXISTS quotes(id INTEGER PRIMARY KEY AUTOINCREMENT, products TEXT, total TEXT, clientId INTEGER)");
+        statement.executeUpdate("CREATE TABLE IF NOT EXISTS quotes(id INTEGER PRIMARY KEY AUTOINCREMENT, products TEXT, total TEXT, date TEXT, clientId INTEGER)");
 
         statement.close();
         return conn;
