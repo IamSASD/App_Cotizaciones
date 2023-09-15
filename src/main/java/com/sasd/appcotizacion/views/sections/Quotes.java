@@ -1,5 +1,6 @@
 package com.sasd.appcotizacion.views.sections;
 
+import com.sasd.appcotizacion.controllers.GeneratePDF;
 import com.sasd.appcotizacion.controllers.QuotesController;
 import com.sasd.appcotizacion.models.QuoteModel;
 import com.sasd.appcotizacion.views.CommonsUIControls;
@@ -24,12 +25,6 @@ public class Quotes extends VBox {
         HBox title = CommonsUIControls.createTitle("Cotizaciones");
         getChildren().add(title);
 
-        Button refreshButt = CommonsUIControls.createButton("Actualizar", 150, MainView.SECONDARY_FONT);
-        HBox buttonRefreshBox = new HBox(refreshButt);
-        buttonRefreshBox.setAlignment(Pos.CENTER_RIGHT);
-        buttonRefreshBox.setPadding(new Insets(0, 0, 13, 0));
-        getChildren().add(buttonRefreshBox);
-
         parentBox = new VBox();
         parentBox.setBackground(background);
         parentBox.setSpacing(20);
@@ -39,12 +34,8 @@ public class Quotes extends VBox {
         scrollPane.setBackground(new Background(new BackgroundFill(MainView.SECONDARY_COLOR, new CornerRadii(13), Insets.EMPTY)));
 
         loadQuotes();
-
+        quotesBoxIsEmpty();
         getChildren().add(scrollPane);
-
-        refreshButt.setOnMouseClicked(e -> {
-            loadQuotes();
-        });
 
     }
 
@@ -59,36 +50,22 @@ public class Quotes extends VBox {
                 String date = rs.getString("date");
                 String clientName = rs.getString("client_name");
                 String clientID = rs.getString("client_id");
-                HBox item = createQuoteItem(id, clientName, date, products, total, clientID);
+                String phone = rs.getString("client_phone");
+                HBox item = createQuoteItem(id, clientName, date, products, total, clientID, phone);
                 parentBox.getChildren().add(item);
             }
+            rs.close();
+            QuotesController.closeConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static HBox createQuoteItem(String id, String clientName, String date, String products, String total, String clientID){
-        Font font = Font.font("Helvetica", 15);
-        Label idLabel = new Label("ID: ");
-        idLabel.setFont(font);
-        Text idText = new Text(id);
-        idText.setFont(font);
-        HBox idBox = new HBox(idLabel, idText);
-        idBox.setAlignment(Pos.CENTER_RIGHT);
+    private static HBox createQuoteItem(String id, String clientName, String date, String products, String total, String clientID, String phone){
 
-        Label clientLabel = new Label("Cliente: ");
-        clientLabel.setFont(font);
-        Text clientText = new Text(clientName);
-        clientText.setFont(font);
-        HBox clientBox = new HBox(clientLabel, clientText);
-        clientBox.setAlignment(Pos.CENTER_RIGHT);
-
-        Label dateLabel = new Label("Fecha: ");
-        dateLabel.setFont(font);
-        Text dateText = new Text(date);
-        dateText.setFont(font);
-        HBox dateBox = new HBox(dateLabel, dateText);
-        dateBox.setAlignment(Pos.CENTER_RIGHT);
+        HBox idBox = infoBox("ID: ", id);
+        HBox clientBox = infoBox("Cliente", clientName);
+        HBox dateBox = infoBox("Fecha: ", date);
 
         Button generatePDFButt = CommonsUIControls.createButton("Generar PDF", 170, MainView.SECONDARY_FONT);
         Button deleteQuoteButt = CommonsUIControls.createButton("Eliminar", 170, MainView.SECONDARY_FONT);
@@ -109,7 +86,30 @@ public class Quotes extends VBox {
             }
         });
 
+        deleteQuoteButt.setOnMouseClicked(e -> {
+            QuotesController.removeQuote(Integer.parseInt(id));
+            loadQuotes();
+            quotesBoxIsEmpty();
+        });
+
+        generatePDFButt.setOnMouseClicked(e -> {
+            GeneratePDF.createPDF(id, products, clientName, date, clientID, phone, total);
+        });
+
         return item;
+    }
+
+    private static void quotesBoxIsEmpty(){
+        if(parentBox.getChildren().toArray().length == 0){
+            Text text = new Text("No hay cotizaciones para mostrar");
+            text.setFont(MainView.MAIN_FONT);
+            text.setFill(MainView.MAIN_COLOR);
+            parentBox.getChildren().add(text);
+        }else {
+            if(parentBox.getChildren().get(0) instanceof Text){
+                parentBox.getChildren().remove(0);
+            }
+        }
     }
 
     private static void quoteDialog(String id, String clientName, String date, String products, String total, String clientID){
@@ -126,8 +126,6 @@ public class Quotes extends VBox {
         pane.setBackground(background);
         pane.getButtonTypes().add(ButtonType.FINISH);
 
-        Label idCol = new Label("ID");
-        VBox idBox = new VBox(idCol);
         Label nameCol = new Label("Nombre");
         VBox nameBox = new VBox(nameCol);
         Label variantCol = new Label("Variante");
@@ -139,12 +137,12 @@ public class Quotes extends VBox {
         Label totalCol = new Label("Total");
         VBox totalAmount = new VBox(totalCol);
 
-        VBox[] vBoxes = {idBox, nameBox, variantBox, unitPrice, numberOfProd, totalAmount};
+        VBox[] vBoxes = {nameBox, variantBox, unitPrice, numberOfProd, totalAmount};
         for(VBox b : vBoxes){
             b.setSpacing(10);
         }
 
-        HBox columnsContainer = new HBox(idBox, nameBox, variantBox, unitPrice, numberOfProd, totalAmount);
+        HBox columnsContainer = new HBox(nameBox, variantBox, unitPrice, numberOfProd, totalAmount);
         columnsContainer.setSpacing(10);
         columnsContainer.setPadding(new Insets(10));
 

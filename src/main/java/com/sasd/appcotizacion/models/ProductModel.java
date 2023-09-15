@@ -74,8 +74,7 @@ public class ProductModel {
 
     @Override
     public String toString() {
-        return  id + " " +
-                productName + " " +
+        return productName + " " +
                 productVariant + " " +
                 formattedPrice + " " +
                 numberOfProd + " " +
