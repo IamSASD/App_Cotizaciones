@@ -87,9 +87,16 @@ public class Quotes extends VBox {
         });
 
         deleteQuoteButt.setOnMouseClicked(e -> {
-            QuotesController.removeQuote(Integer.parseInt(id));
-            loadQuotes();
-            quotesBoxIsEmpty();
+            Text deleteMsg = new Text("Estas seguro de querer eleminar este producto?");
+            VBox msgBox = new VBox(deleteMsg);
+            Dialog<ButtonType> deleteDialog = CommonsUIControls.createDialog("Si", "Eliminar Producto", msgBox, false);
+            deleteDialog.showAndWait().ifPresent(resp -> {
+                if(resp.getButtonData().equals(ButtonBar.ButtonData.OK_DONE)){
+                    QuotesController.removeQuote(Integer.parseInt(id));
+                    loadQuotes();
+                    quotesBoxIsEmpty();
+                }
+            });
         });
 
         generatePDFButt.setOnMouseClicked(e -> {
