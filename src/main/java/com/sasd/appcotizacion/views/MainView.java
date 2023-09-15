@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 public class MainView extends Application {
     public static final Font MAIN_FONT = Font.font("Helvetica", FontWeight.BOLD, 20);
     public static final Font SECONDARY_FONT = Font.font("Helvetica", FontWeight.BOLD, 17);
+    public static final Font THIRD_FONT = Font.font("Helvetica", FontWeight.BOLD, 14);
     public static final Paint MAIN_COLOR = Color.rgb(255, 155, 80);
     public static final Paint SECONDARY_COLOR = Color.rgb(252, 252, 252);
     public static final Paint THIRD_COLOR = Color.rgb(240, 240, 240);

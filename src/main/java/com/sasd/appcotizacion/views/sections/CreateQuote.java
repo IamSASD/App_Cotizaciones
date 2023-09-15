@@ -10,6 +10,7 @@ import com.sasd.appcotizacion.views.CommonsUIControls;
 import com.sasd.appcotizacion.views.MainView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -49,7 +50,7 @@ public class CreateQuote extends VBox {
         searchField = new TextField();
         searchField.setPromptText("Escribe el nombre de un producto");
         searchField.setPrefWidth(250);
-        Button searchButton = new Button("Buscar");
+        Button searchButton = CommonsUIControls.createButton("Buscar", 80, MainView.SECONDARY_FONT);
         HBox hBox = new HBox(searchField, searchButton);
         hBox.setAlignment(Pos.CENTER);
         hBox.setSpacing(8);
@@ -118,6 +119,9 @@ public class CreateQuote extends VBox {
 
         addProductButton.setOnMouseClicked(e -> {
             Dialog<ButtonType> dialog = createDialog("Agregar Producto", boxContent);
+            dialog.setOnShown(ev -> {
+                searchField.requestFocus();
+            });
             dialog.showAndWait().ifPresent(ev -> {
                 searchField.clear();
                 if (boxContent.getChildren().toArray().length == 2){
@@ -127,24 +131,28 @@ public class CreateQuote extends VBox {
         });
 
         addClientButton.setOnMouseClicked(e -> {
-            TextField searchField = new TextField();
-            searchField.setPromptText("Buscar cliente");
-            searchField.setOnKeyPressed(ev -> {
+            TextField searchClientField = new TextField();
+            searchClientField.setPromptText("Buscar cliente");
+            searchClientField.setOnKeyPressed(ev -> {
                 switch (ev.getCode().getName()){
                     case "Esc" -> boxContent.requestFocus();
                     case "Enter" -> searchClient(searchField.getText());
                 }
             });
-            Button searchClientButton = new Button("Buscar");
-            HBox searchClientBox = new HBox(searchField, searchClientButton);
+            Button searchClientButton = CommonsUIControls.createButton("Buscar", 80, MainView.SECONDARY_FONT);
+            HBox searchClientBox = new HBox(searchClientField, searchClientButton);
             searchClientBox.setAlignment(Pos.CENTER);
             searchClientBox.setSpacing(10);
             searchBox = new VBox(searchClientBox);
             searchBox.setSpacing(15);
             dialogClient = createDialog("Agregar Cliente", searchBox);
 
+            dialogClient.setOnShown(ev -> {
+                searchClientField.requestFocus();
+            });
+
             searchClientButton.setOnMouseClicked(ev -> {
-                    searchClient(searchField.getText());
+                    searchClient(searchClientField.getText());
             });
 
             dialogClient.showAndWait();
@@ -216,7 +224,7 @@ public class CreateQuote extends VBox {
                 amount.setDisable(true);
                 amount.setPrefWidth(70);
                 amount.setPromptText("Cantidad");
-                Button add = new Button("Agregar");
+                Button add = CommonsUIControls.createButton("Agregar", 80, MainView.THIRD_FONT);
                 add.setDisable(true);
                 add.setOnMouseClicked(e -> {
                     BigDecimal amountNum = new BigDecimal(amount.getText());
@@ -247,7 +255,7 @@ public class CreateQuote extends VBox {
                 });
                 HBox container = new HBox(check, nameText, variantText, amount, add);
                 container.setSpacing(10);
-                container.setAlignment(Pos.CENTER_LEFT);
+                container.setAlignment(Pos.CENTER);
                 searchResults.getChildren().add(container);
             }
             boxContent.getChildren().add(searchResults);
@@ -267,12 +275,13 @@ public class CreateQuote extends VBox {
         try {
             VBox container = new VBox();
             container.setAlignment(Pos.BOTTOM_LEFT);
+            container.setSpacing(15);
             while (rs.next()){
                 Text clientName = new Text(rs.getString("name"));
-                Button add = new Button("Agregar");
+                Button add = CommonsUIControls.createButton("Agregar", 80, MainView.THIRD_FONT);
                 HBox hBox = new HBox(clientName, add);
                 hBox.setSpacing(10);
-                hBox.setAlignment(Pos.CENTER_LEFT);
+                hBox.setAlignment(Pos.CENTER);
                 container.getChildren().add(hBox);
                 String id = rs.getString("id");
                 add.setOnAction(e -> {
@@ -296,14 +305,21 @@ public class CreateQuote extends VBox {
 
     private Dialog<ButtonType> createDialog(String title, VBox content){
         Dialog<ButtonType> dialog = new Dialog<>();
+        ButtonType buttonType = new ButtonType("Finalizar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        DialogPane pane = dialog.getDialogPane();
         dialog.setTitle(title);
-        dialog.getDialogPane().setPrefSize(400, 400);
-        dialog.getDialogPane().setContent(content);
-        dialog.getDialogPane().setBackground(new Background(new BackgroundFill(MainView.SECONDARY_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
-        dialog.getDialogPane().getButtonTypes().add(new ButtonType("Finalizar", ButtonBar.ButtonData.CANCEL_CLOSE));
-        dialog.setOnShown(ev -> {
-            searchField.requestFocus();
-        });
+        pane.setPrefSize(400, 400);
+        pane.setContent(content);
+        pane.setBackground(new Background(new BackgroundFill(MainView.SECONDARY_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
+        pane.getButtonTypes().add(buttonType);
+        Button butt = (Button) pane.lookupButton(buttonType);
+        butt.setPrefWidth(100);
+        butt.setFont(MainView.SECONDARY_FONT);
+        butt.setCursor(Cursor.HAND);
+        butt.setBackground(new Background(new BackgroundFill(MainView.THIRD_COLOR, new CornerRadii(8), Insets.EMPTY)));
+        butt.setTextFill(MainView.MAIN_COLOR);
+        CommonsUIControls.setHover(butt);
+
         return dialog;
     }
 

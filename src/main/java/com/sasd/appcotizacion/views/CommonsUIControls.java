@@ -92,7 +92,7 @@ public class CommonsUIControls {
         return hBox;
     }
 
-    private static void setHover(Button butt){
+    public static void setHover(Button butt){
         butt.setOnMouseEntered(e -> {
             butt.setBackground(hoverBackg);
             butt.setTextFill(MainView.THIRD_COLOR);

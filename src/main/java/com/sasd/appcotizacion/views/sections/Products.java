@@ -82,6 +82,11 @@ public class Products extends VBox {
             dialog = CommonsUIControls.createDialog("Crear Producto", "Nuevo Producto", fieldsBox, true);
             createProductButton = (Button) dialog.getDialogPane().lookupButton(dialog.getDialogPane().getButtonTypes().get(1));
             validateDialogFields(createProductButton);
+
+            dialog.setOnShown(ev -> {
+                nameField.requestFocus();
+            });
+
             dialog.showAndWait().ifPresent(resp -> {
                 if(resp.getButtonData().equals(ButtonBar.ButtonData.OK_DONE)){
                     getDialogData();
@@ -107,6 +112,10 @@ public class Products extends VBox {
             dialog = CommonsUIControls.createDialog("Editar", "Editar Producto", fieldsBox, true);
             Button editProdButton = (Button) dialog.getDialogPane().lookupButton(dialog.getDialogPane().getButtonTypes().get(1));
             validateDialogFields(editProdButton);
+
+            dialog.setOnShown(ev -> {
+                nameField.requestFocus();
+            });
 
             dialog.showAndWait().ifPresent(resp -> {
                 if(resp.getButtonData().equals(ButtonBar.ButtonData.OK_DONE)){

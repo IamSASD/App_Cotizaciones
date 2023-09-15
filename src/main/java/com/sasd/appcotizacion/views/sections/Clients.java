@@ -69,6 +69,11 @@ public class Clients extends VBox {
             dialog = CommonsUIControls.createDialog("Crear", "Crear nuevo cliente", fieldsBox, true);
             doneButton = (Button) dialog.getDialogPane().lookupButton(dialog.getDialogPane().getButtonTypes().get(1));
             validateDialogFields(doneButton);
+
+            dialog.setOnShown(ev -> {
+                clientNameField.requestFocus();
+            });
+
             dialog.showAndWait().ifPresent(resp -> {
                 if(resp.getButtonData() == ButtonBar.ButtonData.OK_DONE){
                     setClientTable();
@@ -86,6 +91,10 @@ public class Clients extends VBox {
             dialog = CommonsUIControls.createDialog("Editar", "Editar cliente", fieldsBox, true);
             doneButton = (Button) dialog.getDialogPane().lookupButton(dialog.getDialogPane().getButtonTypes().get(1));
             validateDialogFields(doneButton);
+
+            dialog.setOnShown(ev -> {
+                clientNameField.requestFocus();
+            });
 
             dialog.showAndWait().ifPresent(resp -> {
                 if(resp.getButtonData() == ButtonBar.ButtonData.OK_DONE){

@@ -139,6 +139,11 @@ public class Quotes extends VBox {
         Label totalCol = new Label("Total");
         VBox totalAmount = new VBox(totalCol);
 
+        VBox[] vBoxes = {idBox, nameBox, variantBox, unitPrice, numberOfProd, totalAmount};
+        for(VBox b : vBoxes){
+            b.setSpacing(10);
+        }
+
         HBox columnsContainer = new HBox(idBox, nameBox, variantBox, unitPrice, numberOfProd, totalAmount);
         columnsContainer.setSpacing(10);
         columnsContainer.setPadding(new Insets(10));
@@ -157,7 +162,12 @@ public class Quotes extends VBox {
         scrollPane.setBackground(backgroundRounded);
         scrollPane.setFitToWidth(true);
 
-        VBox contentBox = new VBox(quoteID, quoteDate, sep, clientIDBox, clientNameBox, scrollPane);
+        HBox totalBox = infoBox("Total: ", total);
+        totalBox.setBackground(backgroundRounded);
+        totalBox.setPadding(new Insets(10));
+        totalBox.setAlignment(Pos.CENTER_LEFT);
+
+        VBox contentBox = new VBox(quoteID, quoteDate, sep, clientIDBox, clientNameBox, scrollPane, totalBox);
         contentBox.setSpacing(10);
         pane.setContent(contentBox);
 
@@ -178,7 +188,7 @@ public class Quotes extends VBox {
 
     private static VBox parentBox;
     private static final Background background = new Background(new BackgroundFill(MainView.SECONDARY_COLOR, CornerRadii.EMPTY, Insets.EMPTY));
-    private static final Background backgroundRounded = new Background(new BackgroundFill(MainView.SECONDARY_COLOR, new CornerRadii(12), Insets.EMPTY));
+    private static final Background backgroundRounded = new Background(new BackgroundFill(Color.rgb(248,248,248), new CornerRadii(12), Insets.EMPTY));
 
 }
 
